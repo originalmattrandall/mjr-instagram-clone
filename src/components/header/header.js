@@ -1,4 +1,5 @@
 import React from 'react'
+import SignUpButton from '../sign-up-button'
 import './header.css'
 
 const Header = () => {
@@ -8,7 +9,7 @@ const Header = () => {
                 Instagram
             </div>
             <div className='header--login'>
-                Login
+                <SignUpButton />
             </div>
         </div>
     )

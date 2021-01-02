@@ -4,12 +4,16 @@ import Header from '../header'
 import Post from '../post'
 import { db } from '../../utils/firebase';
 
+
 function App() {
   const [posts, setPosts] = useState([])
 
   useEffect(() => {
     db.collection('posts').onSnapshot(snapshot => {
-      setPosts(snapshot.docs.map(doc => doc.data()))
+      setPosts(snapshot.docs.map(doc => ({
+        id: doc.id,
+        post: doc.data()
+      })))
     })
   })
 
@@ -18,8 +22,9 @@ function App() {
       <Header />
 
       <div className='posts'>
-        {posts.map(post => (
+        {posts.map(({ id, post }) => (
           <Post
+            key={id}
             author={post.author}
             caption={post.caption}
             imageUrl={post.imageUrl}
