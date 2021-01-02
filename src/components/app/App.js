@@ -2,8 +2,14 @@ import React, { useState, useEffect } from 'react'
 import './App.css';
 import Header from '../header'
 import Post from '../post'
-import { db } from '../../utils/firebase';
+import { db, auth } from '../../utils/firebase';
+import CreatePost from '../create-post';
 
+const displayCreatePost = (user) => {
+  if (!user) return
+
+  return (<CreatePost displayName={user.displayName} />)
+}
 
 function App() {
   const [posts, setPosts] = useState([])
@@ -21,15 +27,21 @@ function App() {
     <>
       <Header />
 
-      <div className='posts'>
-        {posts.map(({ id, post }) => (
-          <Post
-            key={id}
-            author={post.author}
-            caption={post.caption}
-            imageUrl={post.imageUrl}
-          />
-        ))}
+      <div className='app'>
+
+        {displayCreatePost(auth.currentUser)}
+
+        <div className='posts'>
+          {posts.map(({ id, post }) => (
+            <Post
+              key={id}
+              author={post.author}
+              caption={post.caption}
+              imageUrl={post.imageUrl}
+            />
+          ))}
+        </div>
+
       </div>
     </>
   );
