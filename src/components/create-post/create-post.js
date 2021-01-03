@@ -16,6 +16,11 @@ const CreatePost = () => {
     }
 
     const uploadFile = () => {
+        if (image === null) {
+            alert('your upload must include an image!')
+            return
+        }
+
         // Asynchronous task that uploads our image to firebase
         const uploadTask = storage.ref(`images/${image.name}`).put(image)
 
@@ -67,7 +72,7 @@ const CreatePost = () => {
                 placeholder='enter a caption'
                 onChange={event => setCaption(event.target.value)} />
 
-            <Button className='createpost__button' onClick={uploadFile}></Button>
+            <Button className='createpost__button' onClick={uploadFile}>Create Post</Button>
         </div>
     )
 }
