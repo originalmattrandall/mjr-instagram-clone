@@ -8,7 +8,7 @@ import { Button } from '@material-ui/core'
 const Post = ({ postId, author, caption, imageUrl }) => {
     const [comments, setComments] = useState([])
     const [newComment, setNewComment] = useState('')
-    const loggedInUser = auth.currentUser.displayName
+    const loggedInUser = auth.currentUser ? auth.currentUser.displayName : null
 
     useEffect(() => {
         if (!postId) return
@@ -58,25 +58,29 @@ const Post = ({ postId, author, caption, imageUrl }) => {
 
             <p className='post--caption'><strong>{author}</strong> {caption}</p>
 
-            <form>
-                <input
-                    className=''
-                    type='text'
-                    placeholder='Get your 2 cents in...'
-                    value={newComment}
-                    onChange={event => setNewComment(event.target.value)}
-
-                />
-                <Button
-                    className='post__new-comment'
-                    disabled={!newComment}
-                    onClick={postComment}
-                >
-                    Post Comment
-                </Button>
-            </form>
-
             <div className='post--comments'>
+                {loggedInUser ? (
+                    <form>
+                        <input
+                            className=''
+                            type='text'
+                            placeholder='Get your 2 cents in...'
+                            value={newComment}
+                            onChange={event => setNewComment(event.target.value)}
+
+                        />
+                        <Button
+                            className='post__new-comment'
+                            disabled={!newComment}
+                            onClick={postComment}
+                        >
+                            Post Comment
+                </Button>
+                    </form>
+                ) : (
+                        <p>Login or sign up to comment</p>
+                    )}
+
                 {
                     comments.map(({ id, comment }) => (
                         <div key={id} className='comment'>
