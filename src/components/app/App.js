@@ -5,17 +5,11 @@ import Post from '../post'
 import { db, auth } from '../../utils/firebase';
 import CreatePost from '../create-post';
 
-const displayCreatePost = (user) => {
-  if (!user) return
-
-  return (<CreatePost displayName={user.displayName} />)
-}
-
 function App() {
   const [posts, setPosts] = useState([])
 
   useEffect(() => {
-    db.collection('posts').onSnapshot(snapshot => {
+    db.collection('posts').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
       setPosts(snapshot.docs.map(doc => ({
         id: doc.id,
         post: doc.data()
@@ -29,7 +23,11 @@ function App() {
 
       <div className='app'>
 
-        {displayCreatePost(auth.currentUser)}
+        {auth.currentUser ? (
+          <CreatePost />
+        ) : (
+            <h3>Create an account or login to make a post!</h3>
+          )}
 
         <div className='posts'>
           {posts.map(({ id, post }) => (
