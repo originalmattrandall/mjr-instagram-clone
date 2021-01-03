@@ -36,6 +36,7 @@ function App() {
               author={post.author}
               caption={post.caption}
               imageUrl={post.imageUrl}
+              postId={id}
             />
           ))}
         </div>
