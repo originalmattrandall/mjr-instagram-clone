@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react'
+import Firebase from 'firebase'
 import Avatar from '@material-ui/core/Avatar'
 import './post.css'
-import { db } from '../../utils/firebase'
+import { db, auth } from '../../utils/firebase'
+import { Button } from '@material-ui/core'
 
 const Post = ({ postId, author, caption, imageUrl }) => {
     const [comments, setComments] = useState([])
+    const [newComment, setNewComment] = useState('')
+    const loggedInUser = auth.currentUser.displayName
 
     useEffect(() => {
         if (!postId) return
@@ -12,9 +16,12 @@ const Post = ({ postId, author, caption, imageUrl }) => {
         const unsubscribe = db.collection('posts')
             .doc(postId)
             .collection('comments')
+            .orderBy('timestamp', 'desc')
             .onSnapshot(snapshot => {
-                setComments(snapshot.docs.map(doc =>
-                    doc.data()
+                setComments(snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    comment: doc.data()
+                })
                 ))
             })
 
@@ -22,6 +29,21 @@ const Post = ({ postId, author, caption, imageUrl }) => {
             unsubscribe()
         }
     }, [postId])
+
+    const postComment = event => {
+        event.preventDefault()
+
+        db.collection('posts')
+            .doc(postId)
+            .collection('comments')
+            .add({
+                timestamp: Firebase.firestore.FieldValue.serverTimestamp(),
+                text: newComment,
+                username: loggedInUser
+            })
+
+        setNewComment('')
+    }
 
     return (
         <div className='post'>
@@ -36,11 +58,32 @@ const Post = ({ postId, author, caption, imageUrl }) => {
 
             <p className='post--caption'><strong>{author}</strong> {caption}</p>
 
+            <form>
+                <input
+                    className=''
+                    type='text'
+                    placeholder='Get your 2 cents in...'
+                    value={newComment}
+                    onChange={event => setNewComment(event.target.value)}
+
+                />
+                <Button
+                    className='post__new-comment'
+                    disabled={!newComment}
+                    onClick={postComment}
+                >
+                    Post Comment
+                </Button>
+            </form>
+
             <div className='post--comments'>
                 {
-                    comments.map(comment =>
-                        <p><strong>{comment.username}</strong> {comment.text}</p>
-                    )}
+                    comments.map(({ id, comment }) => (
+                        <div key={id} className='comment'>
+                            <p><strong>{comment.username}</strong> {comment.text}</p>
+                        </div>
+                    ))
+                }
             </div>
         </div>
     )
