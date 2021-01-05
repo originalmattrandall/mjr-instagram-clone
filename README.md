@@ -7,12 +7,12 @@ This Web application was used using the following technologies...
 ## Application Features
 - [x] Create an account(username/email/password)
 - [x] Sign in with email/password
-- [] Sign in using username/password
+- [ ] Sign in using username/password
 - [x] Upload photo and a caption
-- [] Image Compression and Resizing 
-- [] Filters
-- [] Automatic deploy from github
-- [] Sign on with Google
+- [ ] Image Compression and Resizing 
+- [ ] Filters
+- [ ] Automatic deploy from github
+- [ ] Sign on with Google
 
 ## Available Scripts
 
